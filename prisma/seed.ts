@@ -76,6 +76,57 @@ async function main() {
     },
   })
 
+  const nationalSources = [
+    { name: 'SSC', slug: 'ssc', websiteUrl: 'https://ssc.nic.in', baseUrl: 'https://ssc.nic.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 30, categorySlug: 'latest-job' },
+    { name: 'UPSC', slug: 'upsc', websiteUrl: 'https://upsc.gov.in', baseUrl: 'https://upsc.gov.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 30, categorySlug: 'latest-job' },
+    { name: 'RRB', slug: 'rrb', websiteUrl: 'https://rrb.gov.in', baseUrl: 'https://rrb.gov.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 30, categorySlug: 'latest-job' },
+    { name: 'IBPS', slug: 'ibps', websiteUrl: 'https://ibps.in', baseUrl: 'https://ibps.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 30, categorySlug: 'latest-job' },
+    { name: 'SBI', slug: 'sbi', websiteUrl: 'https://sbi.co.in', baseUrl: 'https://sbi.co.in/careers', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 60, categorySlug: 'latest-job' },
+    { name: 'RBI', slug: 'rbi', websiteUrl: 'https://rbi.org.in', baseUrl: 'https://rbi.org.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 60, categorySlug: 'latest-job' },
+    { name: 'Indian Navy', slug: 'indian-navy', websiteUrl: 'https://joinindiannavy.gov.in', baseUrl: 'https://joinindiannavy.gov.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 120, categorySlug: 'latest-job' },
+    { name: 'Indian Airforce', slug: 'indian-airforce', websiteUrl: 'https://indianairforce.nic.in', baseUrl: 'https://indianairforce.nic.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 120, categorySlug: 'latest-job' },
+    { name: 'Indian Army', slug: 'indian-army', websiteUrl: 'https://joinindianarmy.nic.in', baseUrl: 'https://joinindianarmy.nic.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 120, categorySlug: 'latest-job' },
+    { name: 'NTA', slug: 'nta', websiteUrl: 'https://nta.ac.in', baseUrl: 'https://nta.ac.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 30, categorySlug: 'results' },
+    { name: 'AIIMS', slug: 'aiims', websiteUrl: 'https://aiims.edu', baseUrl: 'https://aiims.edu', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 120, categorySlug: 'latest-job' },
+    { name: 'DRDO', slug: 'drdo', websiteUrl: 'https://drdo.gov.in', baseUrl: 'https://drdo.gov.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 120, categorySlug: 'latest-job' },
+    { name: 'EPFO', slug: 'epfo', websiteUrl: 'https://epfindia.gov.in', baseUrl: 'https://epfindia.gov.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 120, categorySlug: 'latest-job' },
+    { name: 'ESIC', slug: 'esic', websiteUrl: 'https://esic.gov.in', baseUrl: 'https://esic.gov.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 120, categorySlug: 'latest-job' },
+    { name: 'BPSC', slug: 'bpsc', websiteUrl: 'https://bpsc.bihar.gov.in', baseUrl: 'https://bpsc.bihar.gov.in', sourceType: 'STATE' as const, parserType: 'HTML_LIST' as const, scheduleMin: 60, stateSlug: 'bihar', categorySlug: 'latest-job' },
+    { name: 'UPPSC', slug: 'uppsc', websiteUrl: 'https://uppsc.up.nic.in', baseUrl: 'https://uppsc.up.nic.in', sourceType: 'STATE' as const, parserType: 'HTML_LIST' as const, scheduleMin: 60, stateSlug: 'uttar-pradesh', categorySlug: 'latest-job' },
+    { name: 'UP Police', slug: 'up-police', websiteUrl: 'https://uppbpb.gov.in', baseUrl: 'https://uppbpb.gov.in', sourceType: 'STATE' as const, parserType: 'HTML_LIST' as const, scheduleMin: 60, stateSlug: 'uttar-pradesh', categorySlug: 'latest-job' },
+    { name: 'MPPSC', slug: 'mppsc', websiteUrl: 'https://mppsc.mp.gov.in', baseUrl: 'https://mppsc.mp.gov.in', sourceType: 'STATE' as const, parserType: 'HTML_LIST' as const, scheduleMin: 60, stateSlug: 'madhya-pradesh', categorySlug: 'latest-job' },
+    { name: 'RPSC', slug: 'rpsc', websiteUrl: 'https://rpsc.rajasthan.gov.in', baseUrl: 'https://rpsc.rajasthan.gov.in', sourceType: 'STATE' as const, parserType: 'HTML_LIST' as const, scheduleMin: 60, stateSlug: 'rajasthan', categorySlug: 'latest-job' },
+    { name: 'DSSSB', slug: 'dsssb', websiteUrl: 'https://dsssb.delhi.gov.in', baseUrl: 'https://dsssb.delhi.gov.in', sourceType: 'STATE' as const, parserType: 'HTML_LIST' as const, scheduleMin: 60, stateSlug: 'delhi', categorySlug: 'latest-job' },
+    { name: 'HSSC', slug: 'hssc', websiteUrl: 'https://hssc.gov.in', baseUrl: 'https://hssc.gov.in', sourceType: 'STATE' as const, parserType: 'HTML_LIST' as const, scheduleMin: 60, stateSlug: null, categorySlug: 'latest-job' },
+    { name: 'Pan Card', slug: 'pan-card', websiteUrl: 'https://www.tin-nsdl.com', baseUrl: 'https://www.tin-nsdl.com', sourceType: 'UTILITY' as const, parserType: 'HTML_LIST' as const, scheduleMin: 1440, categorySlug: 'documents' },
+    { name: 'Aadhaar Card', slug: 'aadhaar-card', websiteUrl: 'https://uidai.gov.in', baseUrl: 'https://uidai.gov.in', sourceType: 'UTILITY' as const, parserType: 'HTML_LIST' as const, scheduleMin: 1440, categorySlug: 'documents' },
+    { name: 'Voter ID', slug: 'voter-id', websiteUrl: 'https://eci.gov.in', baseUrl: 'https://eci.gov.in', sourceType: 'UTILITY' as const, parserType: 'HTML_LIST' as const, scheduleMin: 1440, categorySlug: 'documents' },
+    { name: 'Scholarship Portal', slug: 'scholarship-portal', websiteUrl: 'https://scholarships.gov.in', baseUrl: 'https://scholarships.gov.in', sourceType: 'NATIONAL' as const, parserType: 'HTML_LIST' as const, scheduleMin: 360, categorySlug: 'scholarship' },
+  ]
+
+  const categoriesMap = new Map<string, string>()
+  for (const c of await prisma.category.findMany()) { categoriesMap.set(c.slug, c.id) }
+  const statesMap = new Map<string, string>()
+  for (const s of await prisma.statePage.findMany()) { statesMap.set(s.slug, s.id) }
+
+  for (const src of nationalSources) {
+    await prisma.sourceRegistry.upsert({
+      where: { slug: src.slug },
+      update: {},
+      create: {
+        name: src.name,
+        slug: src.slug,
+        websiteUrl: src.websiteUrl,
+        sourceType: src.sourceType,
+        parserType: src.parserType,
+        baseUrl: src.baseUrl,
+        scheduleMin: src.scheduleMin,
+        categoryId: categoriesMap.get(src.categorySlug) || undefined,
+        stateId: src.stateSlug ? (statesMap.get(src.stateSlug) || undefined) : undefined,
+      },
+    })
+  }
+
   console.log('Seed completed successfully')
 }
 

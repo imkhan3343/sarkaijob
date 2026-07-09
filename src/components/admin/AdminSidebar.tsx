@@ -9,6 +9,9 @@ const navItems = [
   { label: 'Categories', href: '/admin/categories', icon: 'category' },
   { label: 'Posts', href: '/admin/posts', icon: 'article' },
   { label: 'States', href: '/admin/states', icon: 'map' },
+  { label: 'Sources', href: '/admin/sources', icon: 'rss_feed' },
+  { label: 'Candidates', href: '/admin/candidates', icon: 'fact_check' },
+  { label: 'Scrape Runs', href: '/admin/scrape-runs', icon: 'history' },
   { label: 'Settings', href: '/admin/settings', icon: 'settings' },
 ]
 

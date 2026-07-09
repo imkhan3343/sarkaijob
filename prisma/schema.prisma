@@ -34,6 +34,8 @@ model AdminUser {
   role      Role     @default(ADMIN)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  imports   ImportJob[]
+  auditLogs ContentAuditLog[]
 }
 
 model Category {
@@ -46,6 +48,8 @@ model Category {
   sortOrder   Int        @default(0)
   isActive    Boolean    @default(true)
   posts       PostItem[]
+  sources     SourceRegistry[]
+  examEvents  ExamEvent[]
 }
 
 model PostItem {
@@ -84,6 +88,8 @@ model PostItem {
   createdAt            DateTime   @default(now())
   updatedAt            DateTime   @updatedAt
   publishedAt          DateTime?
+  scrapeCandidate   ScrapeCandidate?
+  historicalSnapshots HistoricalSnapshot[]
 
   @@index([categoryId, status])
   @@index([status, publishedAt])
@@ -97,6 +103,7 @@ model StatePage {
   description String?
   isActive    Boolean @default(true)
   sortOrder   Int     @default(0)
+  sources     SourceRegistry[]
 }
 
 model SiteSetting {
@@ -107,4 +114,223 @@ model SiteSetting {
   group       String?
   description String?
   updatedAt   DateTime @updatedAt
+}
+
+enum SourceType {
+  NATIONAL
+  STATE
+  UTILITY
+}
+
+enum ParserType {
+  HTML_LIST
+  HTML_DETAIL
+  JSON_API
+  PDF
+  PLAYWRIGHT
+}
+
+enum HealthStatus {
+  HEALTHY
+  WARNING
+  FAILING
+}
+
+enum RunType {
+  SCHEDULED
+  MANUAL
+  RETRY
+}
+
+enum ScrapeLogStatus {
+  SUCCESS
+  PARTIAL
+  FAILED
+}
+
+enum NormalizationStatus {
+  PENDING
+  NORMALIZED
+  FAILED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  MERGED
+}
+
+model SourceRegistry {
+  id            String       @id @default(cuid())
+  name          String
+  slug          String       @unique
+  websiteUrl    String
+  sourceType    SourceType   @default(NATIONAL)
+  parserType    ParserType   @default(HTML_LIST)
+  baseUrl       String
+  listPath      String?
+  detailPath    String?
+  categoryId    String?
+  category      Category?    @relation(fields: [categoryId], references: [id])
+  stateId       String?
+  stateRel      StatePage?   @relation(fields: [stateId], references: [id])
+  scheduleMin   Int          @default(120)
+  healthStatus  HealthStatus @default(HEALTHY)
+  lastRunAt     DateTime?
+  lastSuccessAt DateTime?
+  failureCount  Int          @default(0)
+  isActive      Boolean      @default(true)
+  config        String?
+  rawEntries    RawScrapeEntry[]
+  runLogs       ScrapeRunLog[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model RawScrapeEntry {
+  id               String              @id @default(cuid())
+  sourceId          String
+  source            SourceRegistry      @relation(fields: [sourceId], references: [id])
+  sourceUrl         String
+  rawTitle          String
+  rawContent        String?
+  rawHtml           String?
+  fetchedAt         DateTime            @default(now())
+  contentHash       String?
+  normalizationStatus NormalizationStatus @default(PENDING)
+  candidate         ScrapeCandidate?
+}
+
+model ScrapeCandidate {
+  id                  String            @id @default(cuid())
+  rawEntryId          String            @unique
+  rawEntry            RawScrapeEntry    @relation(fields: [rawEntryId], references: [id])
+  normalizedTitle     String?
+  normalizedContent   String?
+  extractedCategory   String?
+  extractedOrg        String?
+  extractedState      String?
+  extractedQualification String?
+  extractedTotalPosts Int?
+  extractedStartDate  DateTime?
+  extractedEndDate    DateTime?
+  extractedExamDate   DateTime?
+  extractedResultDate DateTime?
+  extractedApplyLink  String?
+  extractedNotifyLink String?
+  extractedAdmitLink  String?
+  extractedAnswerLink String?
+  extractedWebsite    String?
+  dedupScore          Int?
+  reviewStatus        ReviewStatus      @default(PENDING)
+  reviewedBy          String?
+  reviewedAt          DateTime?
+  postId              String?           @unique
+  post                PostItem?         @relation(fields: [postId], references: [id])
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+model ScrapeRunLog {
+  id          String          @id @default(cuid())
+  sourceId    String
+  source      SourceRegistry  @relation(fields: [sourceId], references: [id])
+  runType     RunType         @default(SCHEDULED)
+  status      ScrapeLogStatus @default(SUCCESS)
+  entriesFound Int            @default(0)
+  entriesNew   Int            @default(0)
+  errors      String?
+  durationMs  Int?
+  startedAt   DateTime        @default(now())
+  completedAt DateTime?
+}
+
+model ImportJob {
+  id          String   @id @default(cuid())
+  filename    String
+  source      String?
+  totalRows   Int      @default(0)
+  imported    Int      @default(0)
+  errors      Int      @default(0)
+  errorLog    String?
+  status      String   @default("PENDING")
+  createdById String?
+  createdBy   AdminUser? @relation(fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContentAuditLog {
+  id         String   @id @default(cuid())
+  action     String
+  entityType String
+  entityId   String
+  before     String?
+  after      String?
+  userId     String?
+  user       AdminUser? @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model ExamEvent {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  organization  String?
+  examDate      DateTime?
+  resultDate    DateTime?
+  applyStart    DateTime?
+  applyEnd      DateTime?
+  totalVacancy  Int?
+  examPattern   String?
+  salary        String?
+  eligibility   String?
+  state         String?
+  categoryId    String?
+  category      Category? @relation(fields: [categoryId], references: [id])
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ApiKey {
+  id          String   @id @default(cuid())
+  name        String
+  key         String   @unique
+  permissions String   @default("read")
+  rateLimit   Int      @default(100)
+  isActive    Boolean  @default(true)
+  lastUsedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model HistoricalSnapshot {
+  id        String   @id @default(cuid())
+  postId    String
+  post      PostItem @relation(fields: [postId], references: [id])
+  snapshot  String
+  archivedAt DateTime @default(now())
+}
+
+model NotificationLog {
+  id        String   @id @default(cuid())
+  type      String
+  channel   String
+  recipient String
+  title     String
+  body      String?
+  sentAt    DateTime @default(now())
+  status    String   @default("SENT")
+}
+
+model WebhookEndpoint {
+  id        String   @id @default(cuid())
+  url       String
+  events    String   @default("post.created,post.updated")
+  isActive  Boolean  @default(true)
+  secret    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
