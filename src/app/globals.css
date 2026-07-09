@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #870000;
+  --primary-container: #b30000;
+  --tertiary: #003f80;
+  --secondary: #3557bc;
+  --error: #ba1a1a;
+  --success-green: #1B5E20;
+  --background: #fcf9f8;
+  --background-alt: #F4F7FA;
+  --border-subtle: #E0E0E0;
+  --on-primary: #ffffff;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--background);
+  color: #1a1a1a;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}

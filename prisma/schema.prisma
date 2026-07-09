@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum BadgeType {
+  NEW
+  HOT
+  LAST_DATE
+  RESULT
+  UPDATE
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  nameHindi   String?
+  description String?
+  icon        String?
+  sortOrder   Int        @default(0)
+  isActive    Boolean    @default(true)
+  posts       PostItem[]
+}
+
+model PostItem {
+  id                   String     @id @default(cuid())
+  title                String
+  titleHindi           String?
+  slug                 String     @unique
+  excerpt              String?
+  excerptHindi         String?
+  content              String?
+  contentHindi         String?
+  categoryId           String
+  category             Category   @relation(fields: [categoryId], references: [id])
+  status               PostStatus @default(DRAFT)
+  badgeText            String?
+  badgeType            BadgeType?
+  organization         String?
+  state                String?
+  qualification        String?
+  totalPosts           Int?
+  applicationStartDate DateTime?
+  applicationEndDate   DateTime?
+  examDate             DateTime?
+  resultDate           DateTime?
+  officialWebsite      String?
+  applyLink            String?
+  notificationLink     String?
+  admitCardLink        String?
+  answerKeyLink        String?
+  seoTitle             String?
+  seoDescription       String?
+  seoKeywords          String?
+  isFeatured           Boolean    @default(false)
+  isBreaking           Boolean    @default(false)
+  viewCount            Int        @default(0)
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+  publishedAt          DateTime?
+
+  @@index([categoryId, status])
+  @@index([status, publishedAt])
+}
+
+model StatePage {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  nameHindi   String?
+  description String?
+  isActive    Boolean @default(true)
+  sortOrder   Int     @default(0)
+}
+
+model SiteSetting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String?
+  valueHindi  String?
+  group       String?
+  description String?
+  updatedAt   DateTime @updatedAt
+}
