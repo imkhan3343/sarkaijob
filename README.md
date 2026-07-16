@@ -1,7 +1,5 @@
 # SarkariJob
 
-[![GitHub](https://img.shields.io/badge/GitHub-hinaidris/sarkaijob-181717?logo=github)](https://github.com/hinaidris/sarkaijob)
-
 Hindi-first, mobile-focused government jobs and exam information platform for Indian job seekers.
 
 SarkariJob brings government job notifications, results, admit cards, answer keys, syllabus, admissions, scholarships, government schemes, state-wise updates, and exam tools into one scalable platform.
@@ -180,7 +178,7 @@ The development key is configurable through `DEV_PUBLIC_API_KEY`. Never use the 
 ## Project Structure
 
 ```text
-.
+sarkaijob-main/
 ├── src/
 │   ├── app/                    # App Router pages and API routes
 │   ├── components/             # Public, admin, ads, analytics, tools
@@ -351,17 +349,14 @@ Recommended production services:
 
 ## Verification
 
-The project was reviewed and verified for:
+The generated project was checked for:
 
 - TypeScript and TSX syntax
 - Local import resolution
 - Prisma model and enum name duplication
 - Python normalization and duplicate-classification behavior
 - Cross-phase file compatibility
-- API key hash lookup correctness
-- Slug generation uniqueness
-- Environment variable validation consistency
-- Minified file expansion for readability
+- ZIP integrity
 
 A complete dependency installation, Prisma generation, migration, and production build should be run in the target development or CI environment before deployment.
 
