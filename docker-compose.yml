@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16
+    environment: {POSTGRES_DB: sarkarijob, POSTGRES_USER: postgres, POSTGRES_PASSWORD: postgres}
+    ports: ["5432:5432"]
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
+  web:
+    build: .
+    depends_on: [db,redis]
+    environment: {DATABASE_URL: postgresql://postgres:postgres@db:5432/sarkarijob, REDIS_URL: redis://redis:6379, NEXTAUTH_URL: http://localhost:3000, NEXTAUTH_SECRET: local-change-me}
+    ports: ["3000:3000"]
+  scraper:
+    build: ./scraper
+    depends_on: [db]
+    environment: {DATABASE_URL: postgresql://postgres:postgres@db:5432/sarkarijob}
+  n8n:
+    image: n8nio/n8n:latest
+    depends_on: [web]
+    ports: ["5678:5678"]

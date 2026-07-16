@@ -1,0 +1,1 @@
+export type SourceHealth='HEALTHY'|'WARNING'|'FAILING';export const getScheduleMinutes=(p:'high'|'medium'|'low')=>p==='high'?30:p==='medium'?120:360;export function getHealthStatus(f:number,h:number):SourceHealth{return f>=5||h>=72?'FAILING':f>=2||h>=24?'WARNING':'HEALTHY'}

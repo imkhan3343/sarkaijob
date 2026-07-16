@@ -1,0 +1,1 @@
+'use client';import { useReportWebVitals } from 'next/web-vitals';export function ReportWebVitals(){useReportWebVitals(m=>{const body=JSON.stringify({name:'web_vital',path:location.pathname,meta:{name:m.name,value:m.value,id:m.id,rating:m.rating}});navigator.sendBeacon?.('/api/analytics',new Blob([body],{type:'application/json'}))});return null}

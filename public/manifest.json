@@ -1,0 +1,10 @@
+{
+  "name": "SarkariJob - Government Jobs",
+  "short_name": "SarkariJob",
+  "description": "Find latest government jobs, results, admit cards, answer keys and syllabus.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fcf9f8",
+  "theme_color": "#003f80",
+  "lang": "hi"
+}

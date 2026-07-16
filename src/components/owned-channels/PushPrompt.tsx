@@ -1,0 +1,1 @@
+'use client';import { useState } from 'react';export function PushPrompt(){const[s,setS]=useState('');async function enable(){if(!('Notification'in window)){setS('Unsupported');return}setS(await Notification.requestPermission())}return <button onClick={enable} className="min-h-11 rounded border px-4 text-sm">Push alerts {s?`(${s})`:''}</button>}

@@ -1,0 +1,1 @@
+export type QueueName='freshness'|'notifications'|'webhooks';export type QueueJob={id:string;queue:QueueName,payload:Record<string,unknown>,createdAt:string};export function createQueueJob(queue:QueueName,payload:Record<string,unknown>):QueueJob{return{id:crypto.randomUUID(),queue,payload,createdAt:new Date().toISOString()}}

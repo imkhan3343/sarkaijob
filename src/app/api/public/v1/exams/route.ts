@@ -1,0 +1,1 @@
+import { NextResponse } from 'next/server';import { prisma } from '@/lib/prisma';import { validateApiKey } from '@/lib/api-auth';export async function GET(r:Request){const a=await validateApiKey(r,'exams:read');if(!a.ok)return a.response;return NextResponse.json({data:await prisma.examEvent.findMany({where:{isActive:true},orderBy:{examDate:'asc'},take:100})})}
